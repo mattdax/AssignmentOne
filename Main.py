@@ -33,36 +33,41 @@ class Clock(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent, bg='black')
         # Function that displays the time on the top right corner of the screen
+
         # Adds time
         self.time1 = ''
         self.time = Label(self, text = self.time1,font=("Helvetica",32), fg = 'white', bg = 'black') # Creates label
         self.time.pack(side=TOP) # Packs it onto screen
+
         # Adds Date
         self.date1 = ''
         self.date = Label(self,text=self.date1,font=("Helvetica",20), fg = 'white', bg = 'black')
         self.date.pack(side = TOP)
+
         # Adds Day of week
         self.dayofweek1 = ''
         self.dayofweek = Label(self, text = self.dayofweek1,font=("Helvetica",15), fg = 'white', bg = 'black')
         self.dayofweek.pack(side = TOP)
-        # calls the tick function the first time.
+
+        # calls the Time tick function to start running.
         self.timeTick()
 
     def timeTick(self):
-        # Function that keep the clock changing on the window
-        if timeFormat == 12:
+        # Function that check to make sure the time is the same as the time being displayed on the window
+
+        if timeFormat == 12: #Defined at top of the file
             time2 = time.strftime('%I:%M %p')  # Sets time as 12hr
         elif timeFormat == 24:
             time2 = time.strftime('%H:%M')  # Sets time as 24hr
         else:
-            # Creates error window if something is wrong
+            # Creates error window if problems are encountered
             error = Tk()
             errorlabel = Label(Text="ERROR: check timeFormat variable")
             errorlabel.pack()
             error.mainloop()
 
-        dayofweek2 = time.strftime('%A') # Sets day of week
-        date2 = time.strftime('%b %d, %Y') # Sets date
+        dayofweek2 = time.strftime('%A') # Sets day of the week format
+        date2 = time.strftime('%b %d, %Y') # Sets date format []
 
         # Conditional statements that run every 200 miliseconds to test if the time is the same as it is on the screen
         # If the time is different it will automatically change the time.

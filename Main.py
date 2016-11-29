@@ -12,7 +12,6 @@ import json #Imports JSON module used to gather data from json files(Ie: Website
 from math import fabs
 
 
-
 #Setup Variables
 
 #Clock
@@ -28,11 +27,6 @@ longitude = -79.6877
 latitude = 43.458236
 
 
-
-#*********************************************************************************************************
-# UNCOMMENT ip variable if using the Appleby students wifi, works on BYOD, not sure about Teachers WIFI
-#ip = '72.14.169.150' #default appleby IP, www.whatsmyip.com if you want to change
-#*********************************************************************************************************
 
 #Functions/Classes
 class Clock(Frame):
@@ -111,7 +105,7 @@ class Weather(Frame):
         if self.summary2 != summary1:
             self.summary2 = summary1
             self.info.config(text = self.summary2)
-        self.temp.after(20000, self.getweather)
+        self.temp.after(200, self.getweather)
 
 
 class MainWindow:  # Defines the class main window
@@ -144,3 +138,4 @@ class MainWindow:  # Defines the class main window
 if __name__ == '__main__':
     w = MainWindow()
     w.background.mainloop()
+

@@ -10,6 +10,7 @@ import time # imports the time module
 import requests # Imports the request module used to open websites
 import json # Imports JSON module used to gather data from json files(Ie: Websites)
 from math import fabs
+from Setup import longitude, latitude, setup
 
 
 #Setup Variables
@@ -26,8 +27,8 @@ degree = chr(176) #Degree sign for weather
 newsurl = 'https://newsapi.org/v1/articles?source=cnn&sortBy=top&apiKey=8cda9e54745d41c0951e028554d8efdd'
 
 # Oakville Longitude and Latitude
-longitude = -79.6877
-latitude = 43.458236
+longitude = longitude
+latitude = latitude
 
 
 
@@ -211,6 +212,7 @@ class MainWindow:  # Defines the class main window
 
 # Program Run Code
 # Calls the class main window which is the window that all widgets will be placed on
+setup()
 if __name__ == '__main__':
     w = MainWindow()
     w.background.mainloop()

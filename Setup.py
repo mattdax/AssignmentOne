@@ -5,7 +5,7 @@ latitude = 0
 class setup:
 
     def __init__(self):
-        self.setup = Tk()
+        setup = Tk()
         intro = Label(setup, text = "Welcome to Mirror OS, a program built to run on a mirror device.")
         intro.pack(side = TOP, pady = 10)
         websitelabel = Label(setup, text = "You can find your Longitude and Latitude here: http://en.mygeoposition.com/ Enter your city in the search bar.")
@@ -22,7 +22,8 @@ class setup:
         run.pack()
         exitsetup = Button(setup, text  = "Exit", command = self.quitprogram)
         exitsetup.pack(side = BOTTOM, pady = 10)
-        self.setup.geometry('600x360')
+        setup.geometry('600x360')
+        setup.mainloop()
 
 
     def quitprogram(self):

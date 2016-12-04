@@ -19,7 +19,7 @@ from Setup import longitude, latitude, setup
 timeFormat = 12 #Change to 24 for 24 hour format
 
 #Weather
-apitoken = 'fd44145b7a9f5f5d47b997586dec55bb' #login that allows the program to get the weather online
+apitoken = 'a5e364ec1db05182ba56acc45dba9db0' #login that allows the program to get the weather online
 weatherurl = 'https://api.forecast.io/forecast/' # Website that is being used to request the weather
 degree = chr(176) #Degree sign for weather
 
@@ -113,10 +113,10 @@ class Weather(Frame):
     def getweather(self):
        # Creates the URL
         self.url = weatherurl + apitoken +'/'+str(latitude).strip()+','+str(longitude).strip()
-
+        print(self.url)
         # Pulls temperature from the site
-        self.weather = requests.get(self.url)
-        self.weather = json.loads(self.weather.text)
+        self.weather = requests.get(self.url).json()
+        #self.weather = json.loads(self.weather.text)
 
         # Converts temperature from F -> C
         temperature1 = fabs(int((self.weather['currently']['temperature']-32)*0.5556))
@@ -132,7 +132,7 @@ class Weather(Frame):
         if self.summary2 != summary1:
             self.summary2 = summary1
             self.info.config(text = self.summary2)
-        self.temp.after(200, self.getweather)
+        self.temp.after(20000, self.getweather)
 
 
 class News(Frame):
@@ -147,16 +147,17 @@ class News(Frame):
 
         title = Label(self, text = 'News', font =('Helvetica', 28), fg = 'White', bg = 'Black')
         title.pack(side = TOP)
-        H1 = Label(self, text = self.headlineone,font =('Helvetica', 20), fg = 'White', bg = 'Black')
-        H2 = Label(self, text=self.headlinetwo, font=('Helvetica', 20), fg='White', bg='Black')
-        H3 = Label(self, text=self.headlinethree, font=('Helvetica', 20), fg='White', bg='Black')
-        H4 = Label(self, text=self.headlinefour, font=('Helvetica', 20), fg='White', bg='Black')
-        H5 = Label(self, text=self.headlinefive, font=('Helvetica', 20), fg='White', bg='Black')
-        H1.pack(side = BOTTOM)
-        H1.pack(side=BOTTOM)
-        H1.pack(side=BOTTOM)
-        H1.pack(side=BOTTOM)
-        H1.pack(side=BOTTOM)
+        self.H1 = Label(self, text = self.headlineone,font =('Helvetica', 15), fg = 'White', bg = 'Black')
+        self.H2 = Label(self, text=self.headlinetwo, font=('Helvetica', 15), fg='White', bg='Black')
+        self.H3 = Label(self, text=self.headlinethree, font=('Helvetica', 15), fg='White', bg='Black')
+        self.H4 = Label(self, text=self.headlinefour, font=('Helvetica', 15), fg='White', bg='Black')
+        self.H5 = Label(self, text=self.headlinefive, font=('Helvetica', 15), fg='White', bg='Black')
+        self.H1.pack(side=TOP)
+        self.H2.pack(side=TOP)
+        self.H3.pack(side=TOP)
+        self.H4.pack(side=TOP)
+        self.H5.pack(side=TOP)
+        self.getnews()
     def getnews(self):
         news = requests.get(newsurl)
         news = json.loads(news.text)
@@ -169,15 +170,24 @@ class News(Frame):
         ]
         if headlines[0] != self.headlineone:
             self.headlineone = headlines[0]
-        elif headlines[1] != self.headlinetwo:
+            self.H1.config(text=self.headlineone)
+        if headlines[1] != self.headlinetwo:
             self.headlinetwo = headlines[1]
-        elif headlines[2] != self.headlinethree:
+            self.H2.config(text=self.headlinetwo)
+        if headlines[2] != self.headlinethree:
             self.headlinethree = headlines[2]
-        elif headlines[3] != self.headlinefour:
+            self.H3.config(text=self.headlinethree)
+        if headlines[3] != self.headlinefour:
             self.headlinefour = headlines[3]
-        elif headlines[4] != self.headlinefive:
+            self.H4.config(text=self.headlinefour)
+        if headlines[4] != self.headlinefive:
             self.headlinefive = headlines[4]
-
+            self.H5.config(text=self.headlinefive)
+        self.H1.after(20000, self.getnews)
+        self.H2.after(20000, self.getnews)
+        self.H3.after(20000, self.getnews)
+        self.H4.after(20000, self.getnews)
+        self.H5.after(20000, self.getnews)
 
 
 
@@ -212,7 +222,8 @@ class MainWindow:  # Defines the class main window
 
 # Program Run Code
 # Calls the class main window which is the window that all widgets will be placed on
-setup()
+if latitude == 0 and longitude == 0:
+    setup()
 if __name__ == '__main__':
     w = MainWindow()
     w.background.mainloop()

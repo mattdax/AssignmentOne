@@ -1,17 +1,44 @@
+"""
+___  ____                       _____ _____
+|  \/  (_)                     |  _  /  ___|
+| .  . |_ _ __ _ __ ___  _ __  | | | \ `--.
+| |\/| | | '__| '__/ _ \| '__| | | | |`--. \
+| |  | | | |  | | | (_) | |    \ \_/ /\__/ /
+\_|  |_/_|_|  |_|  \___/|_|     \___/\____/
+                                            """
 
 #Name: Matthew Daxner
 #Date: ____ (when submitted)
 #Description:
+"""
+
+
+Mirror OS is an Operating System built to run on a Rasberry Pi that has been built into a mirror. The program has multiple
+features including:
+
+Changing Location
+Automatic Location Detection
+Time & Date
+News Headlines, updated on a regular basis
+Weather updated from your location on a regular basis
+Large black background for display on a mirror
+Full setup window, for an easy to use system
+"""
+
 
 #**********************************************************
 #import statements
 from tkinter import * # Imports the GUI module pre-installed with Python
-import time # imports the time module
-import requests # Imports the request module used to open websites
-import json # Imports JSON module used to gather data from json files(Ie: Websites)
-from math import fabs
+# Imports the time module
+import time
+#Imports the urllib used to pull data from online
+from urllib import request
+# Imports JSON module used to gather data from json files(Ie: Websites)
+import json
+#Math module to round numbers up.
+from math import ceil
+# Imports variables from the Setup file.
 from Setup import longitude, latitude, setup
-
 
 #Setup Variables
 
@@ -25,11 +52,6 @@ degree = chr(176) #Degree sign for weather
 
 #News
 newsurl = 'https://newsapi.org/v1/articles?source=cnn&sortBy=top&apiKey=8cda9e54745d41c0951e028554d8efdd'
-
-# Oakville Longitude and Latitude
-longitude = longitude
-latitude = latitude
-
 
 
 #Functions/Classes
@@ -75,6 +97,8 @@ class Clock(Frame):
 
         # Conditional statements that run every 200 milliseconds to test if the time is the same as it is on the screen
         # If the time is different it will automatically change the time.
+
+        # Ignore the error in time2 program still works
         if time2 != self.time1:
             self.time1 = time2
             self.time.config(text = self.time1)
@@ -86,7 +110,6 @@ class Clock(Frame):
             self.dayofweek.config(text = self.dayofweek1)
         self.time.after(200, self.timeTick) #After function is the same as time.sleep() but works with Tkinter
 
-    # Main window class
 
 
 class Weather(Frame):
@@ -111,40 +134,46 @@ class Weather(Frame):
 
     #Function that pulls the weather from online.
     def getweather(self):
-       # Creates the URL
+       #Creates the URL, with Longitude and Latitude
         self.url = weatherurl + apitoken +'/'+str(latitude).strip()+','+str(longitude).strip()
-        print(self.url)
-        # Pulls temperature from the site
-        self.weather = requests.get(self.url).json()
-        #self.weather = json.loads(self.weather.text)
+
+        # Pulls temperature from the online, and converts it into readable text.
+        self.weather = request.urlopen(self.url).read().decode('UTF-8')
+        self.weather = json.loads(self.weather)
 
         # Converts temperature from F -> C
-        temperature1 = fabs(int((self.weather['currently']['temperature']-32)*0.5556))
-        temperature1 = fabs(temperature1)
+        temperature1 = ceil(int((self.weather['currently']['temperature']-32)*0.5556))
+        temperature1 = ceil(temperature1)
 
         # Pulls summary from online
         summary1 = self.weather['currently']['summary']
 
-        # Updates the weather every 1/5 of a second
+        # Updates the weather every 20,000 milliseconds.
         if temperature1 != self.temperature2:
             self.temperature2 = temperature1
             self.temp.config(text = str(self.temperature2)+ degree + "C") # Adds degree symbol
         if self.summary2 != summary1:
             self.summary2 = summary1
             self.info.config(text = self.summary2)
+
+        #Do not change 20000, any faster will cap the amount of times the computer can pull the data from online.
         self.temp.after(20000, self.getweather)
 
-
+#Class that pulls all the news headlines from online.
 class News(Frame):
     def __init__(self, parent):
+
+        #Creates the fram where the news will go
         Frame.__init__(self, parent, bg='black')
 
+        #Defines empty variables
         self.headlineone = ''
         self.headlinetwo = ''
         self.headlinethree = ''
         self.headlinefour = ''
         self.headlinefive = ''
 
+        #Creates all the labels where the headlines will go, after being pulled
         title = Label(self, text = 'News', font =('Helvetica', 28), fg = 'White', bg = 'Black')
         title.pack(side = TOP)
         self.H1 = Label(self, text = self.headlineone,font =('Helvetica', 15), fg = 'White', bg = 'Black')
@@ -157,10 +186,18 @@ class News(Frame):
         self.H3.pack(side=TOP)
         self.H4.pack(side=TOP)
         self.H5.pack(side=TOP)
+
+        #Calls the getnews function which pulls the information from online
         self.getnews()
+
+    #Function that pulls news from online
     def getnews(self):
-        news = requests.get(newsurl)
-        news = json.loads(news.text)
+
+        #Connects online and converts the information into bytes then to JSON data
+        news = request.urlopen(newsurl).read().decode('UTF-8')
+        news = json.loads(news)
+
+        #Using a list the headlines are pulled from the JSON data
         headlines = [
             news['articles'][0]['title'],
             news['articles'][1]['title'],
@@ -168,6 +205,9 @@ class News(Frame):
             news['articles'][3]['title'],
             news['articles'][4]['title']
         ]
+
+        #Checks if the headline are the same as the ones on the display. If not updates them to the new headline
+        #Note: Must all use if's and cannot use elif's because the program must check every single one.
         if headlines[0] != self.headlineone:
             self.headlineone = headlines[0]
             self.H1.config(text=self.headlineone)
@@ -183,6 +223,7 @@ class News(Frame):
         if headlines[4] != self.headlinefive:
             self.headlinefive = headlines[4]
             self.H5.config(text=self.headlinefive)
+        #Runs the function every 20000 milliseconds
         self.H1.after(20000, self.getnews)
         self.H2.after(20000, self.getnews)
         self.H3.after(20000, self.getnews)
@@ -193,13 +234,15 @@ class News(Frame):
 
 class MainWindow:  # Defines the class main window
     def __init__(self):  # Defines the init function which starts the whole program
+
         # Creates window
         self.background = Tk()
 
         # Config
         self.background.geometry("1920x1080")  # Sets the window size as 1920*1080
         self.background.configure(bg="Black")  # Sets the window background as Black for aesthetic purposes
-        self.background.title('Smart Mirror OS')
+        self.background.title('Smart Mirror OS')# Window Title
+        self.background.iconbitmap('mirror.ico')
         self.state = FALSE
 
         # Frames
@@ -207,6 +250,7 @@ class MainWindow:  # Defines the class main window
         self.botFrame = Frame(self.background, bg="Black")
         self.topFrame.pack(side=TOP, fill=BOTH)
         self.botFrame.pack(side=BOTTOM, fill=BOTH)
+
         # Clock
         self.clock = Clock(self.topFrame)
         self.clock.pack(side=RIGHT, anchor=N, padx=100, pady=60)
@@ -220,10 +264,28 @@ class MainWindow:  # Defines the class main window
         self.news.pack(side = RIGHT, anchor =N, padx = 20)
 
 
-# Program Run Code
-# Calls the class main window which is the window that all widgets will be placed on
+#Saves the longitude and latitude data  
+class LongitudeLatiudeCollection:
+    def __init__(self):
+        #Creates the File
+        Location = open("Location.txt", "w")
+
+        #Writes the Information on two lines in the file
+        Location.write(str(longitude)+"\n")
+        Location.write(str(latitude))
+
+
+# Latitude is default set to
 if latitude == 0 and longitude == 0:
     setup()
+
+# Program Run Code
+
+
+#Calls the Longitude and Latitude class, which saves the Lon and Lat in a file
+LongitudeLatiudeCollection()
+
+# Calls the class main window which is the window that all widgets will be placed on
 if __name__ == '__main__':
     w = MainWindow()
     w.background.mainloop()

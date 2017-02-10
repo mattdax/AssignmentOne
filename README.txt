@@ -5,5 +5,7 @@ ___  ____                       _____ _____
 | |  | | | |  | | | (_) | |    \ \_/ /\__/ /
 \_|  |_/_|_|  |_|  \___/|_|     \___/\____/
 
-1. Make sure you have internet connection. Currently does not work on the Appleby Students Wifi
-2. Run the main file, the Setup.py will run automatically after opening Main.py
+
+1. Download the file and leave all files in the folder
+2. Make sure you have internet connection. Currently does not work on the Appleby Students Wifi
+3. Run the main file, the Setup.py will run automatically after opening Main.py
